@@ -219,7 +219,7 @@ const isComposingRef = useRef(false);
       handleSpaceNavigation(Boolean(e.shiftKey));
     }
   };
-  const cellSizeClass = colCount > 10 ? 'size-7 text-xs lg:size-12 sm:text-base' : 'size-6 text-sm sm:size-12 sm:text-2xl';
+  const cellSizeClass = colCount > 10 ? 'size-7 text-xs lg:size-12 lg:text-base' : 'size-6 text-sm lg:size-12 lg:text-2xl';
 
   return (
     <input
@@ -248,7 +248,7 @@ onCompositionEnd={() => {
 }}
       className={`
         ${cellSizeClass} border rounded text-center align-middle leading-none
-        p-0 m-0 flex items-center justify-center
+        p-0 m-0 text-center
         appearance-none
         focus:outline-none focus:ring-2
         transition-all duration-150 ease-in-out
@@ -264,11 +264,14 @@ onCompositionEnd={() => {
         boxSizing: 'border-box',
         padding: 0,
         margin: 0,
-        lineHeight: '1',
+        textAlign:'center',
+        lineHeight: '1', 
+        textIndent: '0px',
         verticalAlign: 'middle',
         WebkitAppearance: 'none',
         MozAppearance: 'none',
         appearance: 'none',
+        WebkitTextSizeAdjust: '100%',
       }}
       maxLength="3"
       disabled={disabled}

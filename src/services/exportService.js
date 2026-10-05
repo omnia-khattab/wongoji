@@ -5,6 +5,51 @@
 
 import { gridToText, gridToCSV, gridToJSON } from '../utils/parser';
 
+const renderGridCanvas = async (element) => {
+  const { default: html2canvas } = await import('html2canvas');
+
+  return html2canvas(element, {
+    backgroundColor: '#ffffff',
+    scale: 2,
+    onclone: (_document, clonedElement) => {
+      // html2canvas positions text in native inputs inconsistently across browsers,
+      // especially when the source grid uses compact mobile cell sizes. Render the
+      // cloned cells as fixed-size flex boxes so text is fully visible and centered.
+      clonedElement.querySelectorAll('input').forEach((input) => {
+        const inputColor = clonedElement.ownerDocument.defaultView
+          .getComputedStyle(input)
+          .color;
+        const cell = clonedElement.ownerDocument.createElement('div');
+        cell.className = input.className;
+        cell.textContent = input.value;
+        cell.style.cssText = [
+          'box-sizing: border-box',
+          'width: 48px',
+          'height: 48px',
+          'flex: 0 0 48px',
+          'display: flex',
+          'align-items: center',
+          'justify-content: center',
+          'padding: 0',
+          'margin: 0',
+          'line-height: 1',
+          'text-align: center',
+          'text-indent: 0',
+          'font-size: 18px',
+          'font-family: sans-serif',
+          `color: ${inputColor}`,
+          'white-space: nowrap',
+          'overflow: visible',
+        ].join(';');
+        input.replaceWith(cell);
+      });
+
+      // Keep the exported frame compact and avoid the extra blank band below the grid.
+      clonedElement.style.paddingBottom = '0';
+    },
+  });
+};
+
 /**
  * Export grid as image (PNG)
  * Uses canvas or html2canvas library
@@ -13,8 +58,7 @@ import { gridToText, gridToCSV, gridToJSON } from '../utils/parser';
  */
 export const exportAsImage = async (element, filename = 'wongoji-grid.png') => {
   try {
-    const { default: html2canvas } = await import('html2canvas');
-    const canvas = await html2canvas(element, { backgroundColor: '#ffffff', scale: 2 });
+    const canvas = await renderGridCanvas(element);
     const link = document.createElement('a');
     link.href = canvas.toDataURL('image/png');
     link.download = filename;
@@ -34,11 +78,10 @@ export const exportAsImage = async (element, filename = 'wongoji-grid.png') => {
  */
 export const exportAsPDF = async (element, filename = 'wongoji-grid.pdf') => {
   try {
-    const [{ default: html2canvas }, { jsPDF }] = await Promise.all([
-      import('html2canvas'),
+    const [{ jsPDF }, canvas] = await Promise.all([
       import('jspdf'),
+      renderGridCanvas(element),
     ]);
-    const canvas = await html2canvas(element, { backgroundColor: '#ffffff', scale: 2 });
     const imageData = canvas.toDataURL('image/png');
     const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
     const margin = 10;
