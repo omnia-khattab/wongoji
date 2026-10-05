@@ -81,18 +81,8 @@ const GridCell = ({
     
   };
 
-  const handleKeyUp = (e) => {
-    if (e.key === ' ') {
-      e.preventDefault();
 
-      if (e.shiftKey) {
-        focusPreviousCell();
-      } else {
-        focusNextCell();
-      }
-    }
-  };
-
+  
  const handleKeyDown = (e) => {
   if (e.key === ' ') {
     e.preventDefault();
@@ -164,7 +154,6 @@ const GridCell = ({
       onChange={handleChange}
       onBeforeInput={handleBeforeInput}
       onKeyDown={handleKeyDown}
-      onKeyUp={handleKeyUp}
       onFocus={() => {
         dispatch({
           type: "TOUCH_CELL",
