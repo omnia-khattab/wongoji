@@ -144,6 +144,37 @@ const GridCell = ({
   }
   };
 
+  useEffect(() => {
+  const input = inputRef.current;
+
+  if (!input) return;
+
+  const handleNativeKeyDown = (e) => {
+    const isSpace =
+      e.key === ' ' ||
+      e.code === 'Space' ||
+      e.keyCode === 32 ||
+      e.which === 32;
+
+    if (!isSpace) return;
+
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (e.shiftKey) {
+      focusPreviousCell();
+    } else {
+      focusNextCell();
+    }
+  };
+
+  input.addEventListener('keydown', handleNativeKeyDown);
+
+  return () => {
+    input.removeEventListener('keydown', handleNativeKeyDown);
+  };
+}, [focusNextCell, focusPreviousCell]); 
+
   const cellSizeClass = colCount > 10 ? 'size-7 text-xs lg:size-12 sm:text-base' : 'size-7 text-sm sm:size-12 sm:text-2xl';
 
   return (
@@ -152,7 +183,7 @@ const GridCell = ({
       type="text"
       value={value}
       onChange={handleChange}
-      onBeforeInput={handleBeforeInput}
+      
       onKeyDown={handleKeyDown}
       onFocus={() => {
         dispatch({
