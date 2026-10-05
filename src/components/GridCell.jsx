@@ -127,6 +127,8 @@ const GridCell = ({
     }
   };
 
+  const cellSizeClass = colCount > 10 ? 'size-7 text-xs lg:size-12 sm:text-base' : 'size-7 text-sm sm:size-12 sm:text-2xl';
+
   return (
     <input
       ref={inputRef}
@@ -141,11 +143,11 @@ const GridCell = ({
         });
       }}
       onCompositionStart={() => setIsComposing(true)}
-      onCompositionEnd={(e) => {
+      onCompositionEnd={() => {
         setIsComposing(false);
       }}
       className={`
-        size-7 text-sm sm:size-12 sm:text-2xl border rounded text-center focus:outline-none focus:ring-2
+        ${cellSizeClass} border rounded text-center focus:outline-none focus:ring-2
         transition-all duration-150 ease-in-out
         disabled:cursor-not-allowed disabled:bg-gray-100 disabled:opacity-60
 
@@ -157,7 +159,6 @@ const GridCell = ({
       `}
       maxLength="3"
       disabled={disabled}
-
       title={hasError ? 'This cell has validation errors' : ''}
     />
   );

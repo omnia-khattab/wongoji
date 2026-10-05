@@ -15,26 +15,36 @@ const initialState = {
   focusTarget: null,
 };
 
+const getGridConfig = (targetTotal) => {
+  const safeTotal = Math.max(0, Number(targetTotal) || 0);
+  const viewportLimit = window.innerWidth < 768 ? 10 : 20;
+  const preferredColumns = safeTotal > 100 ? 20 : 10;
+  const columns = Math.min(preferredColumns, viewportLimit);
+  const rows = safeTotal === 0 ? 0 : Math.ceil(safeTotal / columns);
+
+  return { rows, columns };
+};
+
 const GridPage = () => {
   const [state, dispatch] = useReducer(gridReducer, initialState);
   const gridRef = useRef(null);
-  const [rows, setRows] = React.useState(5);
-  const [columns, setColumns] = React.useState(10);
+  const [totalGrids, setTotalGrids] = React.useState(80);
 
   const handleGenerate = useCallback(() => {
+    const { rows, columns } = getGridConfig(totalGrids);
+
     dispatch({
       type: ACTIONS.INIT_GRID,
       payload: { rows, columns },
     });
-    // Clear errors on new grid
+
     dispatch({
       type: ACTIONS.SET_ERRORS,
       payload: { errors: {} },
     });
-  }, [rows, columns]);
+  }, [totalGrids]);
 
   const handleCellChange = useCallback((rowIndex, colIndex, value) => {
-    // Update the cell
     dispatch({
       type: ACTIONS.UPDATE_CELL,
       payload: { rowIndex, colIndex, value },
@@ -45,9 +55,6 @@ const GridPage = () => {
     dispatch({ type: ACTIONS.NEW_PARAGRAPH });
   }, []);
 
-
-
-  // Run validation whenever grid changes
   React.useEffect(() => {
     if (state.grid.length > 0) {
       const errors = validateGrid(state.grid, state.touchedCells, {
@@ -61,35 +68,33 @@ const GridPage = () => {
     }
   }, [state.grid, state.touchedCells, state.paragraphStarts]);
 
-  // Keep the Rows input in sync when a new paragraph appends a row
-  React.useEffect(() => {
-    if (state.grid.length > 0) setRows(state.grid.length);
-  }, [state.grid.length]);
-
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-purple-100 bg-cover bg-center p-4">
       <header className="text-center mb-8">
-        <h1 className="text-[70px] font-extrabold bg-gradient-to-r from-purple-200 to-blue-400 bg-clip-text text-transparent ">
+        <h1 className="text-[70px] font-extrabold bg-gradient-to-r from-purple-200 to-blue-400 bg-clip-text text-transparent">
           원고지
         </h1>
       </header>
+
       <GridControls
-        rows={rows}
-        setRows={setRows}
-        columns={columns}
-        setColumns={setColumns}
+        totalGrids={totalGrids}
+        setTotalGrids={setTotalGrids}
         onGenerate={handleGenerate}
         onNewParagraph={handleNewParagraph}
         gridRef={gridRef}
         hasGrid={state.grid.length > 0}
       />
-      <WongojiGrid ref={gridRef} gridData={state.grid}
-       onCellChange={handleCellChange}
-       errors={state.errors}
-       dispatch={dispatch}
-       paragraphStarts={state.paragraphStarts}
-       focusTarget={state.focusTarget} />
+
+      <WongojiGrid
+        ref={gridRef}
+        gridData={state.grid}
+        onCellChange={handleCellChange}
+        errors={state.errors}
+        dispatch={dispatch}
+        paragraphStarts={state.paragraphStarts}
+        focusTarget={state.focusTarget}
+      />
+
       <ErrorPanel errors={state.errors} />
     </div>
   );

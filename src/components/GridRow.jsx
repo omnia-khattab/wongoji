@@ -1,10 +1,9 @@
 import React from 'react';
 import GridCell from './GridCell';
 
-const GridRow = ({ row, rowIndex, onCellChange, errors, focusCell, registerCell, rowCount, colCount, dispatch,editableLimit }) => {
+const GridRow = ({ row, rowIndex, onCellChange, errors, focusCell, registerCell, rowCount, colCount, dispatch, editableLimit }) => {
   return (
-    <div className="flex space-x-1">
-      
+    <div className="flex min-w-fit items-center gap-1">
       {row.map((cell, colIndex) => (
         <GridCell
           key={colIndex}
@@ -25,7 +24,6 @@ const GridRow = ({ row, rowIndex, onCellChange, errors, focusCell, registerCell,
         {(rowIndex + 1) * colCount}
       </span>
     </div>
-
   );
 };
 
