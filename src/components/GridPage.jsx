@@ -94,7 +94,10 @@ const GridPage = () => {
         paragraphStarts={state.paragraphStarts}
         focusTarget={state.focusTarget}
       />
-
+<input
+  type="text"
+  placeholder="Test mobile space"
+/>
       <ErrorPanel errors={state.errors} />
     </div>
   );
