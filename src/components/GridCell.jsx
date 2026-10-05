@@ -82,15 +82,16 @@ const GridCell = ({
   };
 
   const handleKeyDown = (e) => {
-    if (e.key === ' ' || e.key === 'Spacebar') {
-      e.preventDefault();
-      focusNextCell();
-      return;
-    }
+    const isSpaceKey = e.code === 'Space' || e.key === ' ' || e.key === 'Spacebar';
 
-    if (e.key === ' ' && e.shiftKey) {
+    if (isSpaceKey) {
       e.preventDefault();
-      focusPreviousCell();
+      if (e.shiftKey) {
+        focusPreviousCell();
+      } else {
+        focusNextCell();
+      }
+      return;
     }
 
     if (e.key === 'Backspace') {
@@ -127,6 +128,21 @@ const GridCell = ({
     }
   };
 
+  const handleBeforeInput = (e) => {
+    const isWhitespaceInput = e.inputType === 'insertText' && e.data && /\s/.test(e.data);
+
+    if (isWhitespaceInput) {
+      e.preventDefault();
+      if (e.inputType === 'insertText' && e.data === ' ' && e.target && e.target.selectionStart !== null) {
+        if (e.shiftKey) {
+          focusPreviousCell();
+        } else {
+          focusNextCell();
+        }
+      }
+    }
+  };
+
   const cellSizeClass = colCount > 10 ? 'size-7 text-xs lg:size-12 sm:text-base' : 'size-7 text-sm sm:size-12 sm:text-2xl';
 
   return (
@@ -135,6 +151,7 @@ const GridCell = ({
       type="text"
       value={value}
       onChange={handleChange}
+      onBeforeInput={handleBeforeInput}
       onKeyDown={handleKeyDown}
       onFocus={() => {
         dispatch({
