@@ -74,74 +74,79 @@ const GridCell = ({
   };
 
  
-  const handleChange = (e) => {
-    const sanitizedValue = e.target.value.replace(/\s/g, '');
+  const handleSpaceNavigation = (shiftPressed = false) => {
+    if (shiftPressed) {
+      focusPreviousCell();
+      return;
+    }
 
-    onChange(rowIndex, colIndex, sanitizedValue);
-    
+    focusNextCell();
   };
 
+  const handleChange = (e) => {
+    const rawValue = e.target.value ?? '';
+    const sanitizedValue = rawValue.replace(/\s/g, '');
+    const insertedWhitespace = rawValue !== sanitizedValue;
 
-  
- const handleKeyDown = (e) => {
-  if (e.key === ' ') {
-    e.preventDefault();
+    onChange(rowIndex, colIndex, sanitizedValue);
 
-    if (e.shiftKey) {
-      focusPreviousCell();
-    } else {
-      focusNextCell();
+    if (insertedWhitespace) {
+      requestAnimationFrame(() => {
+        handleSpaceNavigation(Boolean(e.nativeEvent?.shiftKey));
+      });
+    }
+  };
+
+  const handleKeyDown = (e) => {
+    const isSpaceKey = e.key === ' ' || e.code === 'Space' || e.key === 'Spacebar';
+
+    if (isSpaceKey) {
+      e.preventDefault();
+      handleSpaceNavigation(Boolean(e.shiftKey));
+      return;
     }
 
-    return;
-  }
+    if (e.key === 'Backspace') {
+      if (!value) {
+        e.preventDefault();
+        focusPreviousCell();
+      }
 
-  if (e.key === 'Backspace') {
-    if (!value) {
+      return;
+    }
+
+    if (e.key === 'ArrowRight') {
+      e.preventDefault();
+      focusNextCell();
+      return;
+    }
+
+    if (e.key === 'ArrowLeft') {
       e.preventDefault();
       focusPreviousCell();
+      return;
     }
 
-    return;
-  }
+    if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      focusAboveCell();
+      return;
+    }
 
-  if (e.key === 'ArrowRight') {
-    e.preventDefault();
-    focusNextCell();
-    return;
-  }
-
-  if (e.key === 'ArrowLeft') {
-    e.preventDefault();
-    focusPreviousCell();
-    return;
-  }
-
-  if (e.key === 'ArrowUp') {
-    e.preventDefault();
-    focusAboveCell();
-    return;
-  }
-
-  if (e.key === 'ArrowDown') {
-    e.preventDefault();
-    focusBelowCell();
-    return;
-  }
-};
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      focusBelowCell();
+      return;
+    }
+  };
 
   const handleBeforeInput = (e) => {
-    if (e.inputType === 'insertText' && e.data === ' ') {
-    e.preventDefault();
-
-    requestAnimationFrame(() => {
-      if (e.shiftKey) {
-        focusPreviousCell();
-      } else {
-        focusNextCell();
-      }
-    });
-  }
+    if (e.inputType === 'insertText' && /\s/.test(e.data ?? '')) {
+      e.preventDefault();
+      requestAnimationFrame(() => {
+        handleSpaceNavigation(Boolean(e.shiftKey));
+      });
+    }
   };
 
   const cellSizeClass = colCount > 10 ? 'size-7 text-xs lg:size-12 sm:text-base' : 'size-7 text-sm sm:size-12 sm:text-2xl';
@@ -150,7 +155,7 @@ const GridCell = ({
     <input
       ref={inputRef}
       type="text"
-      defaultValue={value}
+      value={value}
       onChange={handleChange}
       onBeforeInput={handleBeforeInput}
       onKeyDown={handleKeyDown}
