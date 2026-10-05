@@ -81,66 +81,65 @@ const GridCell = ({
     
   };
 
-  const handleKeyDown = (e) => {
-    const isSpaceKey = e.code === 'Space' || e.key === ' ' || e.key === 'Spacebar';
+ const handleKeyDown = (e) => {
+  if (e.key === ' ') {
+    e.preventDefault();
 
-    if (isSpaceKey) {
+    if (e.shiftKey) {
+      focusPreviousCell();
+    } else {
+      focusNextCell();
+    }
+
+    return;
+  }
+
+  if (e.key === 'Backspace') {
+    if (!value) {
       e.preventDefault();
+      focusPreviousCell();
+    }
+
+    return;
+  }
+
+  if (e.key === 'ArrowRight') {
+    e.preventDefault();
+    focusNextCell();
+    return;
+  }
+
+  if (e.key === 'ArrowLeft') {
+    e.preventDefault();
+    focusPreviousCell();
+    return;
+  }
+
+  if (e.key === 'ArrowUp') {
+    e.preventDefault();
+    focusAboveCell();
+    return;
+  }
+
+  if (e.key === 'ArrowDown') {
+    e.preventDefault();
+    focusBelowCell();
+    return;
+  }
+};
+
+  const handleBeforeInput = (e) => {
+    if (e.inputType === 'insertText' && e.data === ' ') {
+    e.preventDefault();
+
+    requestAnimationFrame(() => {
       if (e.shiftKey) {
         focusPreviousCell();
       } else {
         focusNextCell();
       }
-      return;
-    }
-
-    if (e.key === 'Backspace') {
-      if (!value) {
-        e.preventDefault();
-        focusPreviousCell();
-      }
-
-      return;
-    }
-
-    if (e.key === 'ArrowRight') {
-      e.preventDefault();
-      focusNextCell();
-      return;
-    }
-
-    if (e.key === 'ArrowLeft') {
-      e.preventDefault();
-      focusPreviousCell();
-      return;
-    }
-
-    if (e.key === 'ArrowUp') {
-      e.preventDefault();
-      focusAboveCell();
-      return;
-    }
-
-    if (e.key === 'ArrowDown') {
-      e.preventDefault();
-      focusBelowCell();
-      return;
-    }
-  };
-
-  const handleBeforeInput = (e) => {
-    const isWhitespaceInput = e.inputType === 'insertText' && e.data && /\s/.test(e.data);
-
-    if (isWhitespaceInput) {
-      e.preventDefault();
-      if (e.inputType === 'insertText' && e.data === ' ' && e.target && e.target.selectionStart !== null) {
-        if (e.shiftKey) {
-          focusPreviousCell();
-        } else {
-          focusNextCell();
-        }
-      }
-    }
+    });
+  }
   };
 
   const cellSizeClass = colCount > 10 ? 'size-7 text-xs lg:size-12 sm:text-base' : 'size-7 text-sm sm:size-12 sm:text-2xl';
