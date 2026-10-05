@@ -17,9 +17,13 @@ const initialState = {
 
 const getGridConfig = (targetTotal) => {
   const safeTotal = Math.max(0, Number(targetTotal) || 0);
-  const viewportLimit = window.innerWidth < 768 ? 10 : 20;
   const preferredColumns = safeTotal > 100 ? 20 : 10;
-  const columns = Math.min(preferredColumns, viewportLimit);
+  const viewportWidth = window.innerWidth;
+  const isMobileLandscape = viewportWidth < 768
+    && window.matchMedia('(orientation: landscape)').matches;
+  const columns = isMobileLandscape || (viewportWidth >= 768 && viewportWidth < 1024)
+    ? 20
+    : Math.min(preferredColumns, viewportWidth < 768 ? 10 : 20);
   const rows = safeTotal === 0 ? 0 : Math.ceil(safeTotal / columns);
 
   return { rows, columns };
@@ -69,9 +73,10 @@ const GridPage = () => {
   }, [state.grid, state.touchedCells, state.paragraphStarts]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#222831] to-[#393E46] bg-cover bg-center p-4">
+  <>
+    <div className="min-h-screen bg-gradient-to-br from-main-black to-main-gray bg-cover bg-center p-4">
       <header className="text-center mb-8">
-        <h1 className="text-[70px] font-extrabold bg-gradient-to-r from-[#393E46] to-[#948979] bg-clip-text text-transparent">
+        <h1 className="text-[70px] font-extrabold bg-gradient-to-r from-main-gray to-dark-beige bg-clip-text text-transparent">
           원고지
         </h1>
       </header>
@@ -96,7 +101,12 @@ const GridPage = () => {
       />
 
       <ErrorPanel errors={state.errors} />
+      
     </div>
+    {/*<div className="absolute bottom-0 left-0 right-0 px-0 mt-4 py-5 bg-main-black text-light-beige text-center ">
+        Developd By <strong>Omnia</strong>
+    </div>*/}
+  </>
   );
 };
 

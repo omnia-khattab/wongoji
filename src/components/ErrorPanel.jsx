@@ -3,7 +3,7 @@ import React from 'react';
 const ErrorPanel = ({ errors }) => {
   if (!errors || Object.keys(errors).length === 0) {
     return (
-      <div className="mt-8 p-4 bg-green-100 rounded-lg w-2/3 m-auto">
+      <div className="my-8 p-4 bg-green-100 rounded-lg w-2/3 m-auto">
         <h2 className="text-lg font-semibold text-green-800 ">
           ✓ All Valid
         </h2>
@@ -15,7 +15,7 @@ const ErrorPanel = ({ errors }) => {
   const errorEntries = Object.entries(errors);
 
   return (
-    <div className="mt-8 p-4 bg-red-100 rounded-lg w-2/3 m-auto ">
+    <div className="my-8 p-4 bg-red-100 rounded-lg w-2/3 m-auto ">
       <h2 className="text-lg font-semibold text-red-800  mb-3">
         ⚠ Validation Errors ({errorEntries.length} cell{errorEntries.length !== 1 ? 's' : ''})
       </h2>

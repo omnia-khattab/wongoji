@@ -20,7 +20,7 @@ const GridRow = ({ row, rowIndex, onCellChange, errors, focusCell, registerCell,
           disabled={rowIndex * colCount + colIndex > editableLimit}
         />
       ))}
-      <span className="min-w-8 self-center text-right text-xs text-[#DFD0B8] sm:text-sm" aria-label={`Total cells through row ${rowIndex + 1}`}>
+      <span className="min-w-8 self-center text-right text-xs text-light-beige sm:text-sm" aria-label={`Total cells through row ${rowIndex + 1}`}>
         {(rowIndex + 1) * colCount}
       </span>
     </div>

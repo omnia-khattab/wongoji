@@ -45,7 +45,7 @@ const WongojiGrid = forwardRef(({ gridData, onCellChange, errors, dispatch, para
   const colCount = rowCount > 0 ? gridData[0].length : 0;
 
   if (gridData.length === 0) {
-    return <div className="text-center text-gray-500">Generate a grid to start writing.</div>;
+    return <div className="text-center text-light-beige">Generate a grid to start writing.</div>;
   }
 
   // Cells after this flat index are disabled (you can only write forward)
@@ -53,11 +53,11 @@ const WongojiGrid = forwardRef(({ gridData, onCellChange, errors, dispatch, para
 
   return (
     <>
-      <div className='flex justify-center mb-8 select-none text-[#948979]'>
-        <span className='text-[#DFD0B8] mr-2'><strong>{rowCount*colCount}</strong></span> Words
+      <div className='flex justify-center mb-8 select-none text-dark-beige'>
+        <span className='text-light-beige] mr-2'><strong>{rowCount*colCount}</strong></span> Words
       </div>
-      <div className="flex justify-center mb-8">
-        <div ref={gridRef} className="grid gap-1 p-4 bg-[#DFD0B8] bg-opacity-30 backdrop-blur-lg rounded-lg shadow-xl">
+      <div className="mb-8 w-full max-w-full overflow-x-auto">
+        <div ref={gridRef} className="grid w-max mx-auto gap-1 p-4 bg-light-beige bg-opacity-30 backdrop-blur-lg rounded-lg shadow-xl">
           {gridData.map((row, rowIndex) => (
             <GridRow
               key={rowIndex}

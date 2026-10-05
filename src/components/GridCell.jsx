@@ -219,7 +219,7 @@ const isComposingRef = useRef(false);
       handleSpaceNavigation(Boolean(e.shiftKey));
     }
   };
-  const cellSizeClass = colCount > 10 ? 'size-7 text-xs lg:size-12 lg:text-base' : 'size-6 text-sm lg:size-12 lg:text-2xl';
+  const cellSizeClass = colCount > 10 ? 'size-7 text-xs lg:size-9 lg:text-base' : 'size-6 text-sm lg:size-12 lg:text-2xl';
 
   return (
     <input
@@ -248,7 +248,7 @@ onCompositionEnd={() => {
 }}
       className={`
         ${cellSizeClass} border rounded text-center align-middle leading-none
-        p-0 m-0 text-center
+        p-0 m-0
         appearance-none
         focus:outline-none focus:ring-2
         transition-all duration-150 ease-in-out
