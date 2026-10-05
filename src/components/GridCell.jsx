@@ -16,7 +16,8 @@ const GridCell = ({
 }) => {
   const inputRef = useRef(null);
   const hasError = hasCellError(rowIndex, colIndex, errors);
-  const [isComposing, setIsComposing] = useState(false);
+  //const [isComposing, setIsComposing] = useState(false);
+const isComposingRef = useRef(false);
 
   useEffect(() => {
     registerCell(rowIndex, colIndex, inputRef.current);
@@ -83,7 +84,7 @@ const GridCell = ({
     focusNextCell();
   };
 
-  const handleChange = (e) => {
+  /*const handleChange = (e) => {
     const rawValue = e.target.value ?? '';
     const sanitizedValue = rawValue.replace(/\s/g, '');
     const insertedWhitespace = rawValue !== sanitizedValue;
@@ -95,9 +96,15 @@ const GridCell = ({
         handleSpaceNavigation(Boolean(e.nativeEvent?.shiftKey));
       });
     }
+  };*/
+  const handleChange = (e) => {
+    const rawValue = e.target.value ?? '';
+    const sanitizedValue = rawValue.replace(/\s/g, '');
+
+    onChange(rowIndex, colIndex, sanitizedValue);
   };
 
-  const handleKeyDown = (e) => {
+  /*const handleKeyDown = (e) => {
     const isSpaceKey = e.key === ' ' || e.code === 'Space' || e.key === 'Spacebar';
 
     if (isSpaceKey) {
@@ -138,17 +145,83 @@ const GridCell = ({
       focusBelowCell();
       return;
     }
-  };
+  };*/
 
-  const handleBeforeInput = (e) => {
+  const handleKeyDown = (e) => {
+  if (e.key === ' ') {
+    // Do not handle Space while Korean IME is composing.
+    // if (isComposing || e.isComposing) {
+    //   return;
+    // }
+    if (isComposingRef.current || e.isComposing) {
+      return;
+    }
+
+    e.preventDefault();
+
+    handleSpaceNavigation(e.shiftKey);
+    return;
+  }
+
+  if (e.key === 'Backspace') {
+    if (!value) {
+      e.preventDefault();
+      focusPreviousCell();
+    }
+
+    return;
+  }
+
+  if (e.key === 'ArrowRight') {
+    e.preventDefault();
+    focusNextCell();
+    return;
+  }
+
+  if (e.key === 'ArrowLeft') {
+    e.preventDefault();
+    focusPreviousCell();
+    return;
+  }
+
+  if (e.key === 'ArrowUp') {
+    e.preventDefault();
+    focusAboveCell();
+    return;
+  }
+
+  if (e.key === 'ArrowDown') {
+    e.preventDefault();
+    focusBelowCell();
+    return;
+  }
+};
+
+  /*const handleBeforeInput = (e) => {
     if (e.inputType === 'insertText' && /\s/.test(e.data ?? '')) {
       e.preventDefault();
       requestAnimationFrame(() => {
         handleSpaceNavigation(Boolean(e.shiftKey));
       });
     }
-  };
+  };*/
 
+  const handleBeforeInput = (e) => {
+  // if (isComposing || e.isComposing) {
+  //   return;
+  // }
+  if (isComposingRef.current || e.isComposing) {
+      return;
+    }
+
+  if (e.inputType === 'insertText' && e.data === ' ') {
+    e.preventDefault();
+
+    requestAnimationFrame(() => {
+      handleSpaceNavigation(false);
+    });
+  }
+};
   const cellSizeClass = colCount > 10 ? 'size-7 text-xs lg:size-12 sm:text-base' : 'size-7 text-sm sm:size-12 sm:text-2xl';
 
   return (
@@ -165,10 +238,17 @@ const GridCell = ({
           payload: `${rowIndex}-${colIndex}`
         });
       }}
-      onCompositionStart={() => setIsComposing(true)}
-      onCompositionEnd={() => {
-        setIsComposing(false);
-      }}
+      // onCompositionStart={() => setIsComposing(true)}
+      // onCompositionEnd={() => {
+      //   setIsComposing(false);
+      // }}
+      onCompositionStart={() => {
+  isComposingRef.current = true;
+}}
+
+onCompositionEnd={() => {
+  isComposingRef.current = false;
+}}
       className={`
         ${cellSizeClass} border rounded text-center focus:outline-none focus:ring-2
         transition-all duration-150 ease-in-out
