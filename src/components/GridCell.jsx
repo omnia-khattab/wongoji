@@ -219,7 +219,7 @@ const isComposingRef = useRef(false);
       handleSpaceNavigation(Boolean(e.shiftKey));
     }
   };
-  const cellSizeClass = colCount > 10 ? 'size-7 text-xs lg:size-12 sm:text-base' : 'size-7 text-sm sm:size-12 sm:text-2xl';
+  const cellSizeClass = colCount > 10 ? 'size-7 text-xs lg:size-12 sm:text-base' : 'size-6 text-sm sm:size-12 sm:text-2xl';
 
   return (
     <input
@@ -247,7 +247,10 @@ onCompositionEnd={() => {
   isComposingRef.current = false;
 }}
       className={`
-        ${cellSizeClass} border rounded text-center focus:outline-none focus:ring-2
+        ${cellSizeClass} border rounded text-center align-middle leading-none
+        p-0 m-0 flex items-center justify-center
+        appearance-none
+        focus:outline-none focus:ring-2
         transition-all duration-150 ease-in-out
         disabled:cursor-not-allowed disabled:bg-gray-100 disabled:opacity-60
 
@@ -257,6 +260,16 @@ onCompositionEnd={() => {
             : 'border-gray-300 bg-white focus:ring-blue-500 hover:border-gray-400'
         }
       `}
+      style={{
+        boxSizing: 'border-box',
+        padding: 0,
+        margin: 0,
+        lineHeight: '1',
+        verticalAlign: 'middle',
+        WebkitAppearance: 'none',
+        MozAppearance: 'none',
+        appearance: 'none',
+      }}
       maxLength="3"
       disabled={disabled}
       title={hasError ? 'This cell has validation errors' : ''}

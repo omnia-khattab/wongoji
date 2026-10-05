@@ -12,7 +12,7 @@ const GridControls = ({ totalGrids, setTotalGrids, onGenerate, gridRef, hasGrid,
     <div className="flex flex-col items-center mb-8 space-y-4">
       <div className="flex flex-col items-center gap-2 sm:flex-row sm:gap-4">
         <label className="flex items-center">
-          <span className="text-gray-700 font-medium">Total Grids:</span>
+          <span className="text-[#DFD0B8] font-medium">Total Grids:</span>
           <input
             type="number"
             value={totalGrids}
@@ -24,14 +24,14 @@ const GridControls = ({ totalGrids, setTotalGrids, onGenerate, gridRef, hasGrid,
         </label>
       </div>
 
-      <p className="text-xs text-gray-600 text-center">
+      <p className="text-xs text-[#DFD0B8] text-center">
         0–100 totals use 10 columns; more than 100 uses 20 columns, with mobile capped to 10 and tablet+ capped to 20.
       </p>
 
       <div className="flex space-x-4 flex-wrap justify-center">
         <button
           onClick={onGenerate}
-          className="px-4 py-2 bg-purple-400 text-white rounded hover:opacity-75 transition-colors"
+          className="px-4 py-2 bg-gradient-to-l from-[#393E46] to-[#948979] text-white rounded hover:opacity-75 transition-colors"
         >
           Generate Grid
         </button>
@@ -39,14 +39,14 @@ const GridControls = ({ totalGrids, setTotalGrids, onGenerate, gridRef, hasGrid,
         <button
           onClick={handleDownloadFilled}
           disabled={!hasGrid}
-          className="px-4 py-2 bg-purple-400 text-white rounded hover:opacity-75 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          className="px-4 py-2 bg-gradient-to-l from-[#393E46] to-[#948979] text-white rounded hover:opacity-75 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
           원고지 Download
         </button>
 
         <button
           onClick={onNewParagraph}
-          className="px-4 py-2 my-2 md:my-0 bg-purple-400 text-white rounded hover:opacity-75 transition-colors"
+          className="px-4 py-2 my-2 md:my-0 bg-gradient-to-l from-[#393E46] to-[#948979] text-white rounded hover:opacity-75 transition-colors"
         >
           New Paragraph
         </button>

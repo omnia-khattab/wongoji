@@ -69,9 +69,9 @@ const GridPage = () => {
   }, [state.grid, state.touchedCells, state.paragraphStarts]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-purple-100 bg-cover bg-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-[#222831] to-[#393E46] bg-cover bg-center p-4">
       <header className="text-center mb-8">
-        <h1 className="text-[70px] font-extrabold bg-gradient-to-r from-purple-200 to-blue-400 bg-clip-text text-transparent">
+        <h1 className="text-[70px] font-extrabold bg-gradient-to-r from-[#393E46] to-[#948979] bg-clip-text text-transparent">
           원고지
         </h1>
       </header>

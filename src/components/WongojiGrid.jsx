@@ -53,11 +53,11 @@ const WongojiGrid = forwardRef(({ gridData, onCellChange, errors, dispatch, para
 
   return (
     <>
-      <div className='flex justify-center mb-8 select-none'>
-        <span className='text-purple-500 mr-2'><strong>{rowCount*colCount}</strong></span> Words
+      <div className='flex justify-center mb-8 select-none text-[#948979]'>
+        <span className='text-[#DFD0B8] mr-2'><strong>{rowCount*colCount}</strong></span> Words
       </div>
       <div className="flex justify-center mb-8">
-        <div ref={gridRef} className="grid gap-1 p-4 bg-purple-200 bg-opacity-30 backdrop-blur-lg rounded-lg shadow-xl">
+        <div ref={gridRef} className="grid gap-1 p-4 bg-[#DFD0B8] bg-opacity-30 backdrop-blur-lg rounded-lg shadow-xl">
           {gridData.map((row, rowIndex) => (
             <GridRow
               key={rowIndex}
