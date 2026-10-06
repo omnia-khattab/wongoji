@@ -15,7 +15,7 @@ const initialState = {
   focusTarget: null,
 };
 
-const getGridConfig = (targetTotal) => {
+/*const getGridConfig = (targetTotal) => {
   const safeTotal = Math.max(0, Number(targetTotal) || 0);
   const preferredColumns = safeTotal > 100 ? 20 : 10;
   const viewportWidth = window.innerWidth;
@@ -27,15 +27,58 @@ const getGridConfig = (targetTotal) => {
   const rows = safeTotal === 0 ? 0 : Math.ceil(safeTotal / columns);
 
   return { rows, columns };
+};*/
+
+const getGridConfig = (targetTotal) => {
+  const safeTotal = Math.max(0, Number(targetTotal) || 0);
+  const viewportWidth = window.innerWidth;
+  const isLandscape = window.matchMedia('(orientation: landscape)').matches;
+
+  let columns = 10;
+
+  // Less than 100 = always 10 columns
+  if (safeTotal > 100) {
+    // Tablet / Desktop
+    if (viewportWidth >= 768) {
+      columns = 20;
+    }
+
+    // Mobile landscape
+    else if (isLandscape) {
+      columns = 20;
+    }
+  }
+
+  const rows = safeTotal === 0
+    ? 0
+    : Math.ceil(safeTotal / columns);
+
+  return { rows, columns };
 };
 
 const GridPage = () => {
   const [state, dispatch] = useReducer(gridReducer, initialState);
   const gridRef = useRef(null);
   const [totalGrids, setTotalGrids] = React.useState(80);
+  const [generatedTotal, setGeneratedTotal] = React.useState(0);
+  /*const handleGenerate = useCallback(() => {
+    const { rows, columns } = getGridConfig(totalGrids);
+
+    dispatch({
+      type: ACTIONS.INIT_GRID,
+      payload: { rows, columns },
+    });
+
+    dispatch({
+      type: ACTIONS.SET_ERRORS,
+      payload: { errors: {} },
+    });
+  }, [totalGrids]);*/
 
   const handleGenerate = useCallback(() => {
     const { rows, columns } = getGridConfig(totalGrids);
+
+    setGeneratedTotal(totalGrids);
 
     dispatch({
       type: ACTIONS.INIT_GRID,
@@ -71,6 +114,33 @@ const GridPage = () => {
       });
     }
   }, [state.grid, state.touchedCells, state.paragraphStarts]);
+
+  React.useEffect(() => {
+  const handleViewportChange = () => {
+    if (state.grid.length === 0 || generatedTotal === 0) {
+      return;
+    }
+
+    const { columns } = getGridConfig(generatedTotal);
+
+    if (columns === state.columns) {
+      return;
+    }
+
+    dispatch({
+      type: ACTIONS.CHANGE_COLUMNS,
+      payload: { columns },
+    });
+  };
+
+  window.addEventListener('resize', handleViewportChange);
+  window.addEventListener('orientationchange', handleViewportChange);
+
+  return () => {
+    window.removeEventListener('resize', handleViewportChange);
+    window.removeEventListener('orientationchange', handleViewportChange);
+  };
+}, [generatedTotal, state.grid.length, state.columns]);
 
   return (
   <>

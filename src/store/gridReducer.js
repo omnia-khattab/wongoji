@@ -13,6 +13,7 @@ export const ACTIONS = {
   CLEAR_ERRORS: 'CLEAR_ERRORS',
   NEW_PARAGRAPH: 'NEW_PARAGRAPH',
   CLEAR_FOCUS: 'CLEAR_FOCUS',
+  CHANGE_COLUMNS: 'CHANGE_COLUMNS',
 
 };
 
@@ -107,6 +108,33 @@ export const gridReducer = (state, action) => {
         [action.payload]: true
       }
     };
+
+    case ACTIONS.CHANGE_COLUMNS: {
+      const { columns } = action.payload;
+
+      if (!columns || columns === state.columns) {
+        return state;
+      }
+
+      // Flatten the existing grid so no text is lost
+      const flatGrid = state.grid.flat();
+
+      const rows = Math.ceil(flatGrid.length / columns);
+
+      const newGrid = Array.from({ length: rows }, (_, rowIndex) =>
+        Array.from({ length: columns }, (_, colIndex) => {
+          const index = rowIndex * columns + colIndex;
+          return flatGrid[index] ?? '';
+        })
+      );
+
+      return {
+        ...state,
+        grid: newGrid,
+        rows,
+        columns,
+      };
+  }
 
     default:
       return state;
