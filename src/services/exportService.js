@@ -36,6 +36,7 @@ const renderGridCanvas = async (element) => {
           'text-align: center',
           'text-indent: 0',
           'font-size: 18px',
+          'font-weight: 600',
           'font-family: sans-serif',
           `color: ${inputColor}`,
           'white-space: nowrap',
